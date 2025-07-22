@@ -1,0 +1,139 @@
+import React from 'react';
+import UseAxiosSecure from '../../../hooks/UseAxiosSecure';
+import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
+import Swal from 'sweetalert2';
+import Loading from '../../Shared/Loading/Loading';
+
+const ManageDonations = () => {
+  const axiosSecure = UseAxiosSecure();
+  const queryClient = useQueryClient();
+
+  /* ---------- fetch ALL donations ---------- */
+  const {
+    data: donations = [],
+    isLoading,
+    isError,
+    error,
+  } = useQuery({
+    queryKey: ['donations'], // new key: all donations
+    queryFn: async () => {
+      const res = await axiosSecure.get('/donations'); // no email filter
+      return res.data;
+    },
+  });
+
+  /* ---------- mutation for status update ---------- */
+  const updateStatus = useMutation({
+    mutationFn: ({ id, status }) =>
+      axiosSecure.put(`/donations/${id}`, { status }),
+    onSuccess: (_d, vars) => {
+      queryClient.invalidateQueries(['donations']);
+      Swal.fire({
+        icon: 'success',
+        title: `Donation ${vars.status}!`,
+        text: `The donation has been ${vars.status.toLowerCase()} successfully.`,
+        timer: 2500,
+        showConfirmButton: false,
+      });
+    },
+    onError: (err) => {
+      Swal.fire({
+        icon: 'error',
+        title: 'Update failed',
+        text: err?.response?.data?.error || err.message,
+      });
+    },
+  });
+
+  const handleAction = (don, newStatus) => {
+    Swal.fire({
+      title: `${newStatus} this donation?`,
+      icon: 'question',
+      showCancelButton: true,
+      confirmButtonText: `Yes, ${newStatus.toLowerCase()} it`,
+    }).then((res) => {
+      if (res.isConfirmed) {
+        updateStatus.mutate({ id: don._id, status: newStatus });
+      }
+    });
+  };
+
+  /* ---------- ui ---------- */
+  if (isLoading) return <Loading />;
+  if (isError) return <p className="text-red-600">{error.message}</p>;
+
+  const badgeColor = (status) =>
+    ({
+      Pending: 'badge-warning',
+      Verified: 'badge-success',
+      Rejected: 'badge-error',
+    }[status] || 'badge-ghost');
+
+  return (
+    <div className="w-11/12 mx-auto">
+      <h2 className="text-2xl font-semibold mb-6">All Donations</h2>
+
+      {donations.length === 0 ? (
+        <p>No donations found.</p>
+      ) : (
+        <div className="overflow-x-auto">
+          <table className="table w-full">
+            <thead>
+              <tr className="bg-base-200 text-left">
+                <th className="p-3">Title</th>
+                <th className="p-3">Food&nbsp;Type</th>
+                <th className="p-3">Restaurant&nbsp;Name</th>
+                <th className="p-3">Restaurant&nbsp;Email</th>
+                <th className="p-3">Qty</th>
+                <th className="p-3">Status</th>
+                <th className="p-3">Actions</th>
+              </tr>
+            </thead>
+            <tbody>
+              {donations.map((don) => (
+                <tr key={don._id} className="hover:bg-base-100">
+                  <td className="p-3 font-medium">{don.title}</td>
+                  <td className="p-3">{don.foodType}</td>
+                  <td className="p-3">{don.restaurantName}</td>
+                  <td className="p-3">{don.createdby}</td>
+                  <td className="p-3">{don.quantity}</td>
+                  <td className="p-3">
+                    <span className={`badge ${badgeColor(don.status)}`}>
+                      {don.status}
+                    </span>
+                  </td>
+
+                  {/* show controls only for Pending items */}
+                  <td className="p-3 space-x-2">
+                    {don.status === 'Pending' ? (
+                      <>
+                        <button
+                          onClick={() => handleAction(don, 'Verified')}
+                          className="btn btn-sm btn-success"
+                          disabled={updateStatus.isLoading}
+                        >
+                          Verify
+                        </button>
+                        <button
+                          onClick={() => handleAction(don, 'Rejected')}
+                          className="btn btn-sm btn-error"
+                          disabled={updateStatus.isLoading}
+                        >
+                          Reject
+                        </button>
+                      </>
+                    ) : (
+                      <span className="text-gray-400">—</span>
+                    )}
+                  </td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
+      )}
+    </div>
+  );
+};
+
+export default ManageDonations;
