@@ -12,7 +12,7 @@ const AuthLayout = () => {
           src={AuthImage}
           className="max-w-sm rounded-lg shadow-2xl hidden lg:block"
         />
-        <div>
+        <div className="w-full lg:w-1/2">
           <Outlet />
         </div>
       </div>

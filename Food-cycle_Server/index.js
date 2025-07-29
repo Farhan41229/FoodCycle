@@ -33,7 +33,7 @@ const client = new MongoClient(uri, {
 let DonationsCollection;
 let TransactionsCollection;
 let UsersCollection;
-let CharityRequestsCollection; // NEW collection reference
+let CharityRequestsCollection; 
 
 async function initMongo() {
   await client.connect();
@@ -157,16 +157,6 @@ app.post('/create-payment-intent', async (_req, res) => {
 /* =========================================================
    TRANSACTIONS CRUD
    ========================================================= */
-app.post('/transactions', async (req, res) => {
-  try {
-    const newTransaction = { ...req.body, createdAt: new Date() };
-    const result = await TransactionsCollection.insertOne(newTransaction);
-    res.status(201).send(result);
-  } catch (err) {
-    console.error('POST /transactions error:', err);
-    res.status(500).send({ error: 'Failed to add transaction' });
-  }
-});
 
 app.get('/transactions', async (req, res) => {
   try {
@@ -194,6 +184,17 @@ app.get('/transactions/:id', async (req, res) => {
   } catch (err) {
     console.error('GET /transactions/:id error:', err);
     res.status(500).send({ error: 'Failed to fetch transaction' });
+  }
+});
+
+app.post('/transactions', async (req, res) => {
+  try {
+    const newTransaction = { ...req.body, createdAt: new Date() };
+    const result = await TransactionsCollection.insertOne(newTransaction);
+    res.status(201).send(result);
+  } catch (err) {
+    console.error('POST /transactions error:', err);
+    res.status(500).send({ error: 'Failed to add transaction' });
   }
 });
 
@@ -316,195 +317,7 @@ app.delete('/users/:id', async (req, res) => {
   }
 });
 
-/* =========================================================
-   REVIEWS (legacy separate endpoints)
-   ========================================================= */
-app.patch('/users/:id/reviews', async (req, res) => {
-  try {
-    const { id } = req.params;
-    if (!ObjectId.isValid(id))
-      return res.status(400).send({ error: 'Invalid user id' });
 
-    const review = { ...req.body };
-    if (review._id && ObjectId.isValid(review._id)) {
-      review._id = new ObjectId(review._id);
-    } else if (!review._id) {
-      review._id = new ObjectId();
-    } else {
-      return res.status(400).send({ error: 'Invalid review _id format' });
-    }
-    review.createdAt = review.createdAt
-      ? new Date(review.createdAt)
-      : new Date();
-
-    const result = await UsersCollection.updateOne(
-      { _id: new ObjectId(id) },
-      { $push: { reviews: review } }
-    );
-    if (!result.matchedCount)
-      return res.status(404).send({ error: 'User not found' });
-
-    res.send({ message: 'Review added to user', reviewId: review._id });
-  } catch (err) {
-    console.error('PATCH /users/:id/reviews error:', err);
-    res.status(500).send({ error: 'Failed to add review to user' });
-  }
-});
-
-app.patch('/donations/:id/reviews', async (req, res) => {
-  try {
-    const { id } = req.params;
-    if (!ObjectId.isValid(id))
-      return res.status(400).send({ error: 'Invalid donation id' });
-
-    const review = { ...req.body };
-    if (review._id && ObjectId.isValid(review._id)) {
-      review._id = new ObjectId(review._id);
-    } else if (!review._id) {
-      review._id = new ObjectId();
-    } else {
-      return res.status(400).send({ error: 'Invalid review _id format' });
-    }
-    review.createdAt = review.createdAt
-      ? new Date(review.createdAt)
-      : new Date();
-
-    const result = await DonationsCollection.updateOne(
-      { _id: new ObjectId(id) },
-      { $push: { reviews: review } }
-    );
-    if (!result.matchedCount)
-      return res.status(404).send({ error: 'Donation not found' });
-
-    res.send({ message: 'Review added to donation', reviewId: review._id });
-  } catch (err) {
-    console.error('PATCH /donations/:id/reviews error:', err);
-    res.status(500).send({ error: 'Failed to add review to donation' });
-  }
-});
-
-/* =========================================================
-   NEW UNIFIED REVIEW CREATION (single call = single _id)
-   ========================================================= */
-app.post('/reviews', async (req, res) => {
-  try {
-    const {
-      userId,
-      donationId,
-      rating,
-      description,
-      donationTitle,
-      restaurantName,
-      reviewerId, // optional if same as userId
-      reviewerName,
-      reviewerEmail,
-      reviewerImage,
-      reviewTime, // optional external timestamp
-    } = req.body;
-
-    if (!userId || !donationId)
-      return res.status(400).send({ error: 'userId and donationId required' });
-    if (!ObjectId.isValid(userId) || !ObjectId.isValid(donationId))
-      return res.status(400).send({ error: 'Invalid userId or donationId' });
-
-    const reviewId = new ObjectId();
-    const now = new Date();
-    const reviewDoc = {
-      _id: reviewId,
-      donationId: new ObjectId(donationId),
-      donationTitle,
-      restaurantName,
-      reviewerId:
-        reviewerId && ObjectId.isValid(reviewerId)
-          ? new ObjectId(reviewerId)
-          : new ObjectId(userId),
-      reviewerName,
-      reviewerEmail,
-      reviewerImage,
-      description,
-      rating,
-      reviewTime: reviewTime ? new Date(reviewTime) : now,
-      createdAt: now,
-    };
-
-    // Insert into user
-    const userUpdate = await UsersCollection.updateOne(
-      { _id: new ObjectId(userId) },
-      { $push: { reviews: reviewDoc } }
-    );
-    if (!userUpdate.matchedCount)
-      return res.status(404).send({ error: 'User not found' });
-
-    // Insert into donation
-    const donationUpdate = await DonationsCollection.updateOne(
-      { _id: new ObjectId(donationId) },
-      { $push: { reviews: { ...reviewDoc } } }
-    );
-    if (!donationUpdate.matchedCount)
-      return res.status(404).send({ error: 'Donation not found' });
-
-    res.status(201).send({ message: 'Review created', reviewId });
-  } catch (err) {
-    console.error('POST /reviews error:', err);
-    res.status(500).send({ error: 'Failed to create review' });
-  }
-});
-
-/* =========================================================
-   REVIEW DELETION
-   ========================================================= */
-app.delete('/users/:userId/reviews/:reviewId', async (req, res) => {
-  try {
-    const { userId, reviewId } = req.params;
-    if (!ObjectId.isValid(userId))
-      return res.status(400).send({ error: 'Invalid user id' });
-
-    const reviewIdFilter = ObjectId.isValid(reviewId)
-      ? new ObjectId(reviewId)
-      : reviewId;
-
-    const result = await UsersCollection.updateOne(
-      { _id: new ObjectId(userId) },
-      { $pull: { reviews: { _id: reviewIdFilter } } }
-    );
-
-    if (!result.modifiedCount)
-      return res.status(404).send({ error: 'Review not found in user' });
-
-    res.send({ message: 'Review deleted from user', reviewId });
-  } catch (err) {
-    console.error('DELETE /users/:userId/reviews/:reviewId error:', err);
-    res.status(500).send({ error: 'Failed to delete review from user' });
-  }
-});
-
-app.delete('/donations/:donationId/reviews/:reviewId', async (req, res) => {
-  try {
-    const { donationId, reviewId } = req.params;
-    if (!ObjectId.isValid(donationId))
-      return res.status(400).send({ error: 'Invalid donation id' });
-
-    const reviewIdFilter = ObjectId.isValid(reviewId)
-      ? new ObjectId(reviewId)
-      : reviewId;
-
-    const result = await DonationsCollection.updateOne(
-      { _id: new ObjectId(donationId) },
-      { $pull: { reviews: { _id: reviewIdFilter } } }
-    );
-
-    if (!result.modifiedCount)
-      return res.status(404).send({ error: 'Review not found in donation' });
-
-    res.send({ message: 'Review deleted from donation', reviewId });
-  } catch (err) {
-    console.error(
-      'DELETE /donations/:donationId/reviews/:reviewId error:',
-      err
-    );
-    res.status(500).send({ error: 'Failed to delete review from donation' });
-  }
-});
 
 /* =========================================================
    CHARITY REQUESTS CRUD (NEW)

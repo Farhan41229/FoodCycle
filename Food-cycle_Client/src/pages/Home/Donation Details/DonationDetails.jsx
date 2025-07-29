@@ -85,6 +85,7 @@ const RequestModal = ({ onClose, onSubmit }) => {
 const DonationDetails = () => {
   const { id } = useParams();
   const { DBUser } = useContext(AuthContext);
+  console.log(DBUser);
   const axiosSecure = UseAxiosSecure();
   const queryClient = useQueryClient();
 
@@ -110,6 +111,7 @@ const DonationDetails = () => {
     queryKey: ['donation', id],
     queryFn: async () => {
       const res = await axiosSecure.get(`/donations/${id}`);
+      console.log(`The Donation Details => `, res.data);
       return res.data;
     },
   });
@@ -267,6 +269,10 @@ const DonationDetails = () => {
           }}
         />
       )}
+      <div className='flex justify-center items-center flex-col'>
+        <h1 className="text-center mt-4 text-3xl font-bold">Reviews</h1>
+        <div className="divider w-1/2 mx-auto"></div>
+      </div>
     </div>
   );
 };
