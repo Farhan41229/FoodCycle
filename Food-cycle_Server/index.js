@@ -33,7 +33,8 @@ const client = new MongoClient(uri, {
 let DonationsCollection;
 let TransactionsCollection;
 let UsersCollection;
-let CharityRequestsCollection; 
+let CharityRequestsCollection;
+let ReviewsCollection;
 
 async function initMongo() {
   await client.connect();
@@ -317,7 +318,70 @@ app.delete('/users/:id', async (req, res) => {
   }
 });
 
-
+/* =========================================================
+   REVIEWS CRUD
+   ========================================================= */
+app.get('/reviews', async (req, res) => {
+  try {
+    const { email, RESemail } = req.query;
+    let filter = {};
+    if (email && RESemail)
+      filter = { UserEmail: email, Restaurant_Email: RESemail };
+    else if (email) filter = { UserEmail: email };
+    else if (RESemail) filter = { Restaurant_Email: RESemail };
+    const results = ReviewsCollection.find(filter).sortAt(-1).toArray();
+    res.send(results);
+  } catch (err) {
+    console.log('Something Went Wrong: ', err);
+  }
+});
+app.get('/reviews/:id', async (req, res) => {
+  try {
+    const { id } = req.params;
+    const results = ReviewsCollection.findOne({
+      _id: new ObjectId(id),
+    });
+    res.send(results);
+  } catch (error) {
+    console.log('Something Went Wrong: ', error);
+  }
+});
+app.post('/reviews', async (req, res) => {
+  try {
+    const doc = { ...req.body };
+    const now = new Date();
+    doc.createdAt = now;
+    doc.updatedAt = now;
+    const result = ReviewsCollection.insertOne(doc);
+    res.status(200).send(result);
+  } catch (error) {
+    console.log('Something Went Wrong: ', error);
+  }
+});
+app.delete('/reviews/:id', async (req, res) => {
+  try {
+    const { id } = req.params;
+    const result = ReviewsCollection.deleteOne({
+      _id: new ObjectId(id),
+    });
+    res.send(result);
+  } catch (error) {
+    console.log('Something Went Wrong: ', error);
+  }
+});
+app.put('/reviews/:id', async (req, res) => {
+  const { id } = req.params;
+  const doc = { ...req.body };
+  const now = new Date();
+  doc.updatedAt = now;
+  const result = ReviewsCollection.updateOne(
+    {
+      _id: new ObjectId(id),
+    },
+    { $set: doc }
+  );
+  res.send(result);
+});
 
 /* =========================================================
    CHARITY REQUESTS CRUD (NEW)
