@@ -43,6 +43,7 @@ async function initMongo() {
   TransactionsCollection = db.collection('transactions');
   UsersCollection = db.collection('users');
   CharityRequestsCollection = db.collection('charityRequests'); // initialize
+  ReviewsCollection = db.collection('reviews');
   console.log('✅ Connected to MongoDB Atlas');
 }
 initMongo().catch((err) => {
@@ -329,16 +330,22 @@ app.get('/reviews', async (req, res) => {
       filter = { UserEmail: email, Restaurant_Email: RESemail };
     else if (email) filter = { UserEmail: email };
     else if (RESemail) filter = { Restaurant_Email: RESemail };
-    const results = ReviewsCollection.find(filter).sortAt(-1).toArray();
+
+    const results = await ReviewsCollection.find(filter)
+      .sort({ createdAt: -1 })
+      .toArray();
+    console.log('Reviews fetched:', results);
     res.send(results);
   } catch (err) {
-    console.log('Something Went Wrong: ', err);
+    console.error('Something Went Wrong: ', err);
+    res.status(500).send({ error: 'Failed to fetch reviews' });
   }
 });
+
 app.get('/reviews/:id', async (req, res) => {
   try {
     const { id } = req.params;
-    const results = ReviewsCollection.findOne({
+    const results = await ReviewsCollection.findOne({
       _id: new ObjectId(id),
     });
     res.send(results);
@@ -352,7 +359,7 @@ app.post('/reviews', async (req, res) => {
     const now = new Date();
     doc.createdAt = now;
     doc.updatedAt = now;
-    const result = ReviewsCollection.insertOne(doc);
+    const result = await ReviewsCollection.insertOne(doc);
     res.status(200).send(result);
   } catch (error) {
     console.log('Something Went Wrong: ', error);
@@ -361,7 +368,7 @@ app.post('/reviews', async (req, res) => {
 app.delete('/reviews/:id', async (req, res) => {
   try {
     const { id } = req.params;
-    const result = ReviewsCollection.deleteOne({
+    const result = await ReviewsCollection.deleteOne({
       _id: new ObjectId(id),
     });
     res.send(result);
@@ -374,7 +381,7 @@ app.put('/reviews/:id', async (req, res) => {
   const doc = { ...req.body };
   const now = new Date();
   doc.updatedAt = now;
-  const result = ReviewsCollection.updateOne(
+  const result = await ReviewsCollection.updateOne(
     {
       _id: new ObjectId(id),
     },

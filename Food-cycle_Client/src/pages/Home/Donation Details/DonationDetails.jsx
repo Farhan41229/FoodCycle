@@ -6,6 +6,7 @@ import AuthContext from '../../../context/AuthContext/AuthContext';
 import Loading from '../../Shared/Loading/Loading';
 import Swal from 'sweetalert2';
 import 'sweetalert2/dist/sweetalert2.min.css';
+import ReviewCard from '../../../components/ReviewCard/ReviewCard';
 
 // Verify if a user can request a donation
 const Verify = (requests = [], donation) => {
@@ -18,6 +19,29 @@ const Verify = (requests = [], donation) => {
     }
   }
   return true;
+};
+
+// Star rating
+const StarRating = ({ rating, setRating }) => {
+  const stars = [1, 2, 3, 4, 5]; // We want to show 5 stars
+
+  return (
+    <div className="flex gap-1">
+      {stars.map((star) => (
+        <svg
+          key={star}
+          xmlns="http://www.w3.org/2000/svg"
+          width="24"
+          height="24"
+          fill={star <= rating ? '#ffcc00' : '#e4e4e4'} // Filled yellow for selected, gray for others
+          className="cursor-pointer"
+          onClick={() => setRating(star)} // Set the rating when a star is clicked
+        >
+          <path d="M12 .587l3.668 7.431 8.21 1.19-5.947 5.805 1.41 8.198-7.772-4.076-7.773 4.076 1.41-8.198-5.947-5.805 8.21-1.19L12 .587z" />
+        </svg>
+      ))}
+    </div>
+  );
 };
 
 // Request Modal component
@@ -85,11 +109,12 @@ const RequestModal = ({ onClose, onSubmit }) => {
 const DonationDetails = () => {
   const { id } = useParams();
   const { DBUser } = useContext(AuthContext);
-  console.log(DBUser);
   const axiosSecure = UseAxiosSecure();
   const queryClient = useQueryClient();
 
   const [showRequestModal, setShowRequestModal] = useState(false);
+  const [reviewDescription, setReviewDescription] = useState('');
+  const [rating, setRating] = useState(0); // Rating state, starts at 0 (no rating)
 
   // Fetch Requests made by the user
   const { data: requests = [] } = useQuery({
@@ -111,10 +136,19 @@ const DonationDetails = () => {
     queryKey: ['donation', id],
     queryFn: async () => {
       const res = await axiosSecure.get(`/donations/${id}`);
-      console.log(`The Donation Details => `, res.data);
       return res.data;
     },
   });
+
+  // Fetch reviews for the specific donation
+  const { data: reviews = [] } = useQuery({
+    queryKey: ['reviews'],
+    queryFn: async () => {
+      const res = await axiosSecure.get('/reviews');
+      return res.data;
+    },
+  });
+  // console.log(reviews);
 
   if (donationLoading) return <Loading />;
   if (donationError)
@@ -122,16 +156,11 @@ const DonationDetails = () => {
   if (!donation) return <p>Donation not found.</p>;
 
   const canRequestDonation = DBUser?.role === 'Charity';
-
-  // Check if the user can submit a request for this donation
   const canSubmitRequest = Verify(requests, donation);
 
-  // Handle Confirm Pickup button click
   const handleConfirmPickup = async (requestId) => {
     try {
-      // Update Status2 to "Picked Up"
       await axiosSecure.put(`/requests/${requestId}`, { Status2: 'Picked Up' });
-      // Invalidate requests query to trigger a re-fetch and update the state
       queryClient.invalidateQueries(['requests', DBUser?.email]);
       Swal.fire({
         icon: 'success',
@@ -148,9 +177,48 @@ const DonationDetails = () => {
     }
   };
 
+  const HandleReviewSubmit = (description, rating) => {
+    if (!description || rating === 0) {
+      document.getElementById('my_modal_3').close();
+      Swal.fire({
+        icon: 'warning',
+        title: 'Please provide a review description and a rating.',
+      });
+      return;
+    }
+
+    const ReviewPayload = {
+      Useremail: DBUser?.email,
+      UserName: DBUser?.name,
+      UserId: DBUser?._id,
+      UserImg: DBUser?.userImage,
+      ReviewDescription: description,
+      Rating: rating,
+      Restaurant_Name: donation?.restaurantName,
+      Restaurant_Email: donation?.createdby,
+      DonationTitle: donation?.title,
+      Restaurant_Img: donation?.imageUrl,
+    };
+
+    axiosSecure
+      .post('/reviews', ReviewPayload)
+      .then((res) => {
+        if (res.data.insertedId) {
+          Swal.fire({
+            icon: 'success',
+            title: 'Review Submitted!',
+            text: 'Your review has been successfully submitted.',
+          });
+        }
+      })
+      .catch((err) => console.log(err));
+
+    document.getElementById('my_modal_3').close();
+  };
+
   return (
     <div className="pb-24">
-      {/* HERO */}
+      {/* Hero Section */}
       <div className="relative h-72 md:h-[340px] w-full overflow-hidden">
         <img
           src={donation.imageUrl}
@@ -163,7 +231,7 @@ const DonationDetails = () => {
         </h1>
       </div>
 
-      {/* DETAILS CARD */}
+      {/* Donation Details */}
       <div className="-mt-24 max-w-5xl mx-auto px-4">
         <div className="backdrop-blur-md bg-base-100/70 shadow-xl rounded-2xl p-8 md:p-10 border border-base-200">
           <div className="grid md:grid-cols-2 gap-6 md:gap-12">
@@ -182,6 +250,59 @@ const DonationDetails = () => {
                 <span className="font-semibold">Status:</span>
                 <span className="badge badge-info">{donation.status}</span>
               </p>
+              <button
+                className="btn bg-blue-600 text-white"
+                onClick={() =>
+                  document.getElementById('my_modal_3').showModal()
+                }
+              >
+                Add a Review
+              </button>
+              <dialog id="my_modal_3" className="modal">
+                <div className="modal-box">
+                  <form method="dialog">
+                    <button
+                      className="btn btn-sm btn-circle btn-ghost absolute right-2 top-2"
+                      onClick={() =>
+                        document.getElementById('my_modal_3').close()
+                      }
+                    >
+                      ✕
+                    </button>
+                  </form>
+                  <h3 className="font-bold text-lg text-center">
+                    Review Modal
+                  </h3>
+                  <div className="divider"></div>
+                  <form>
+                    <div className="flex flex-col gap-5">
+                      <textarea
+                        required
+                        placeholder="Add your Review"
+                        className="bg-gray-200 p-5"
+                        name="Review_Description"
+                        id="review_description"
+                        value={reviewDescription}
+                        onChange={(e) => setReviewDescription(e.target.value)} // Handle input change
+                      ></textarea>
+                      {/* Star Rating UI */}
+                      <div>
+                        <h4 className="text-center">Rate this Donation:</h4>
+                        <StarRating rating={rating} setRating={setRating} />
+                      </div>
+                    </div>
+                  </form>
+                  <button
+                    onClick={() =>
+                      HandleReviewSubmit(reviewDescription, rating)
+                    }
+                    className="my-5 bg-blue-500 p-5 w-full rounded-2xl text-white font-bold hover:cursor-pointer hover:bg-blue-600 hover:-translate-y-0.5 transition-all duration-300"
+                    type="button"
+                  >
+                    Submit Review
+                  </button>
+                </div>
+              </dialog>
 
               {/* Request Donation button only for Charity users */}
               {canRequestDonation && (
@@ -269,9 +390,14 @@ const DonationDetails = () => {
           }}
         />
       )}
-      <div className='flex justify-center items-center flex-col'>
+      <div className="flex justify-center items-center flex-col">
         <h1 className="text-center mt-4 text-3xl font-bold">Reviews</h1>
         <div className="divider w-1/2 mx-auto"></div>
+        <div className="grid grid-cols-1 gap-3 w-1/2 mx-auto lg:grid-cols-2 lg:w-3/4">
+          {reviews.map((review, i) => (
+            <ReviewCard review={review} key={i}></ReviewCard>
+          ))}
+        </div>
       </div>
     </div>
   );
