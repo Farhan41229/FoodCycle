@@ -7,6 +7,12 @@ import Loading from '../../Shared/Loading/Loading';
 import Swal from 'sweetalert2';
 import 'sweetalert2/dist/sweetalert2.min.css';
 import ReviewCard from '../../../components/ReviewCard/ReviewCard';
+import {
+  FaBookmark,
+  FaHandPointer,
+  FaMousePointer,
+  FaRegBookmark,
+} from 'react-icons/fa';
 
 // Verify if a user can request a donation
 const Verify = (requests = [], donation) => {
@@ -115,6 +121,7 @@ const DonationDetails = () => {
   const [showRequestModal, setShowRequestModal] = useState(false);
   const [reviewDescription, setReviewDescription] = useState('');
   const [rating, setRating] = useState(0); // Rating state, starts at 0 (no rating)
+  const [Updatestatus, SetUpdatestatus] = useState(false);
 
   // Fetch Requests made by the user
   const { data: requests = [] } = useQuery({
@@ -216,6 +223,49 @@ const DonationDetails = () => {
     document.getElementById('my_modal_3').close();
   };
 
+  const HandleAddToFavourite = () => {
+    const { _id, ...Payload } = DBUser;
+
+    const isFavorite = DBUser?.favorites.includes(donation._id);
+    // console.log(`The status is ${isFavorite}`);
+    SetUpdatestatus(isFavorite); // Update the status state to reflect if the donation is a favorite
+    // console.log(`The Update Status is ${Updatestatus}`);
+
+    // Only add if it's not already in the favorites
+    if (!Updatestatus) {
+      Payload?.favorites.push(donation._id);
+      axiosSecure
+        .put(`/users/${_id}`, Payload)
+        .then((res) => {
+          // Show success SweetAlert when the update is successful
+          Swal.fire({
+            icon: 'success',
+            title: 'Added to Favorites!',
+            text: 'The donation has been added to your favorites.',
+            showConfirmButton: false,
+            timer: 1500,
+          });
+          // Update the state after adding to favorites
+          SetUpdatestatus(true); // Trigger a state update to re-render the UI
+        })
+        .catch((err) => {
+          console.log(err);
+          // Show error SweetAlert in case of failure
+          Swal.fire({
+            icon: 'error',
+            title: 'Oops...',
+            text: 'There was an issue adding to favorites. Please try again.',
+          });
+        });
+    } else {
+      Swal.fire({
+        icon: 'info',
+        title: 'Already in Favorites!',
+        text: 'This donation is already in your favorites.',
+      });
+    }
+  };
+
   return (
     <div className="pb-24">
       {/* Hero Section */}
@@ -234,7 +284,7 @@ const DonationDetails = () => {
       {/* Donation Details */}
       <div className="-mt-24 max-w-5xl mx-auto px-4">
         <div className="backdrop-blur-md bg-base-100/70 shadow-xl rounded-2xl p-8 md:p-10 border border-base-200">
-          <div className="grid md:grid-cols-2 gap-6 md:gap-12">
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-6 md:gap-12">
             <div className="space-y-3 text-base-content/90">
               <Detail label="Food Type" value={donation.foodType} />
               <Detail label="Restaurant" value={donation.restaurantName} />
@@ -303,6 +353,14 @@ const DonationDetails = () => {
                   </button>
                 </div>
               </dialog>
+              <div className="flex gap-5 items-center">
+                <h1>Add to Favourites</h1>
+                <FaRegBookmark
+                  onClick={HandleAddToFavourite}
+                  size={20}
+                  className="cursor-pointer"
+                />
+              </div>
 
               {/* Request Donation button only for Charity users */}
               {canRequestDonation && (
