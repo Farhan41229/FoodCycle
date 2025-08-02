@@ -152,7 +152,13 @@ const DonationDetails = () => {
     queryKey: ['reviews'],
     queryFn: async () => {
       const res = await axiosSecure.get('/reviews');
-      return res.data;
+      const FilteredReviews = res?.data.filter((review) => {
+        return review.DonationTitle == donation?.title;
+      });
+      console.log(res.data);
+      console.log(donation.title);
+      console.log(FilteredReviews);
+      return FilteredReviews;
     },
   });
   // console.log(reviews);
