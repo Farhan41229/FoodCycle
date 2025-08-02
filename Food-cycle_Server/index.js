@@ -327,8 +327,8 @@ app.get('/reviews', async (req, res) => {
     const { email, RESemail } = req.query;
     let filter = {};
     if (email && RESemail)
-      filter = { UserEmail: email, Restaurant_Email: RESemail };
-    else if (email) filter = { UserEmail: email };
+      filter = { Useremail: email, Restaurant_Email: RESemail };
+    else if (email) filter = { Useremail: email };
     else if (RESemail) filter = { Restaurant_Email: RESemail };
 
     const results = await ReviewsCollection.find(filter)
