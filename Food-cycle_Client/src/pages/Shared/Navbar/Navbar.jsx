@@ -11,19 +11,19 @@ const Navbar = () => {
   const NavItems = (
     <>
       <li>
-        <NavLink to={'/'}>Home</NavLink>
+        <NavLink className={'rounded-2xl lg:p-2 lg:w-[150px] border border-blue-500 font-semibold transition-all duration-300 hover:bg-blue-700  hover:text-white hover:font-bold flex justify-center'} to={'/'}>Home</NavLink>
       </li>
 
       <li>
-        <NavLink to={'/about'}>About Us</NavLink>
+        <NavLink className={'rounded-2xl lg:p-2 lg:w-[150px] border border-blue-500 font-semibold transition-all duration-300 hover:bg-blue-700  hover:text-white hover:font-bold flex justify-center'} to={'/about'}>About Us</NavLink>
       </li>
       <li>
-        <NavLink to={'/allDonations'}>All Donations</NavLink>
+        <NavLink className={'rounded-2xl lg:p-2 lg:w-[150px] border border-blue-500 font-semibold transition-all duration-300 hover:bg-blue-700  hover:text-white hover:font-bold flex justify-center'} to={'/allDonations'}>All Donations</NavLink>
       </li>
 
       {user != null ? (
         <li>
-          <NavLink to={'/dashboard'}>User Dashboard</NavLink>
+          <NavLink className={'rounded-2xl lg:p-2 lg:w-[150px] border border-blue-500 font-semibold transition-all duration-300 hover:bg-blue-700  hover:text-white hover:font-bold flex justify-center'} to={'/dashboard'}>User Dashboard</NavLink>
         </li>
       ) : (
         ''
@@ -56,7 +56,7 @@ const Navbar = () => {
   };
 
   return (
-    <div className="navbar bg-base-100 shadow-sm lg:w-11/12 lg:mx-auto my-5">
+    <div className="navbar bg-base-100/40 backdrop-blur-md fixed z-50 top-0 lg:left-[70px] p-5 rounded-[48px] shadow-sm lg:w-11/12 lg:mx-auto my-5">
       <div className="navbar-start">
         <div className="dropdown">
           <div tabIndex={0} role="button" className="btn btn-ghost lg:hidden">
@@ -77,7 +77,7 @@ const Navbar = () => {
           </div>
           <ul
             tabIndex={0}
-            className="menu menu-sm dropdown-content bg-base-100 rounded-box z-1 mt-3 w-52 p-2 shadow"
+            className="menu menu-sm dropdown-content bg-base-100 rounded-box z-1 mt-3 w-52 p-2 shadow gap-2"
           >
             {NavItems}
           </ul>
@@ -87,7 +87,7 @@ const Navbar = () => {
         </div>
       </div>
       <div className="navbar-center hidden lg:flex">
-        <ul className="menu menu-horizontal px-1">{NavItems}</ul>
+        <ul className="menu menu-horizontal px-1 gap-5">{NavItems}</ul>
       </div>
       <div className="navbar-end">
         {user == null ? (

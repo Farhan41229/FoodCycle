@@ -14,7 +14,7 @@ const HomeLayout = () => {
     return <Loading></Loading>;
   }
   return (
-    <div>
+    <div className=''>
       {/* <h1>Hello This is Home</h1> */}
       <Navbar></Navbar>
       <Outlet></Outlet>
