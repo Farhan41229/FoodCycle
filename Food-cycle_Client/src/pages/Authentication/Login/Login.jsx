@@ -1,11 +1,22 @@
-import React, { useContext } from 'react';
+import React, { useContext, useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { Link, useLocation, useNavigate } from 'react-router';
 import Swal from 'sweetalert2';
 import 'sweetalert2/dist/sweetalert2.min.css'; // default SweetAlert2 theme
 import AuthContext from '../../../context/AuthContext/AuthContext';
+import { FaEye, FaEyeSlash } from 'react-icons/fa';
 
 const Login = () => {
+  // Password Visibility State
+  const [showPassword, setShowPassword] = useState(false); // State to toggle password visibility
+
+  // Toggle password visibility
+  const togglePasswordVisibility = () => {
+    setShowPassword(!showPassword);
+    const input = document.getElementById('password');
+    input.selectionStart = input.selectionEnd = input.value.length; // Keep the cursor at the end
+  };
+
   // Auth Context
   const { signIn } = useContext(AuthContext);
 
@@ -49,20 +60,9 @@ const Login = () => {
   return (
     <section className="bg-gray-50 dark:bg-gray-900">
       <div className="flex flex-col items-center justify-center px-6 py-8 mx-auto md:h-screen lg:py-0">
-        <a
-          href="#"
-          className="flex items-center mb-6 text-2xl font-semibold text-gray-900 dark:text-white"
-        >
-          <img
-            className="w-8 h-8 mr-2"
-            src="https://flowbite.s3.amazonaws.com/blocks/marketing-ui/logo.svg"
-            alt="logo"
-          />
-          Flowbite
-        </a>
         <div className="w-full lg:w-[1000px] bg-white rounded-lg shadow dark:border md:mt-0 sm:max-w-md xl:p-0 dark:bg-gray-800 dark:border-gray-700">
           <div className="p-6 space-y-4 md:space-y-6 sm:p-8">
-            <h1 className="text-xl font-bold leading-tight tracking-tight text-gray-900 md:text-2xl dark:text-white">
+            <h1 className="text-xl text-center font-bold leading-tight tracking-tight text-gray-900 md:text-2xl dark:text-white">
               Sign in to your account
             </h1>
             <form
@@ -96,15 +96,27 @@ const Login = () => {
                 >
                   Password
                 </label>
-                <input
-                  type="password"
-                  name="password"
-                  id="password"
-                  placeholder="••••••••"
-                  className="bg-gray-50 border border-gray-300 text-gray-900 rounded-lg focus:ring-[#2563eb] focus:border-[#2563eb] block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
-                  required
-                  {...register('password')}
-                />
+                <div className="relative">
+                  <input
+                    type={showPassword ? 'text' : 'password'} // Conditionally change input type
+                    name="password"
+                    id="password"
+                    placeholder="••••••••"
+                    className="bg-gray-50 border border-gray-300 text-gray-900 rounded-lg focus:ring-[#2563eb] focus:border-[#2563eb] block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
+                    required
+                    {...register('password')}
+                  />
+                  <span
+                    className="absolute right-3 top-1/2 transform -translate-y-1/2 cursor-pointer"
+                    onClick={togglePasswordVisibility}
+                  >
+                    {showPassword ? (
+                      <FaEyeSlash className="text-gray-500" />
+                    ) : (
+                      <FaEye className="text-gray-500" />
+                    )}
+                  </span>
+                </div>
               </div>
               {/* Remember me CheckBox */}
               <div className="flex items-center justify-between">
@@ -152,6 +164,12 @@ const Login = () => {
                 </Link>
               </p>
             </form>
+            <Link
+              to={'/'}
+              className="btn w-full bg-blue-800 text-white hover:-translate-y-0.5 hover:bg-blue-600 transition-all duration-300"
+            >
+              Go back to Home
+            </Link>
           </div>
         </div>
       </div>

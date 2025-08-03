@@ -1,4 +1,4 @@
-import React, { useContext } from 'react';
+import React, { useContext, useState } from 'react';
 import { useForm } from 'react-hook-form';
 import Swal from 'sweetalert2';
 import 'sweetalert2/dist/sweetalert2.min.css'; // default SweetAlert2 theme
@@ -6,10 +6,15 @@ import AuthContext from '../../../context/AuthContext/AuthContext';
 import { Link } from 'react-router';
 import axios from 'axios';
 import UseAxiosSecure from '../../../hooks/UseAxiosSecure';
+import { FaEye, FaEyeSlash } from 'react-icons/fa';
 
 const Register = () => {
   // Auth Context
   const { createUser, UpdateUserProfile } = useContext(AuthContext);
+  const [showPassword, setShowPassword] = useState(false);
+  const togglePasswordVisibility = () => {
+    setShowPassword(!showPassword);
+  };
   // Axios Secure
   const axiosSecure = UseAxiosSecure();
 
@@ -119,21 +124,9 @@ const Register = () => {
   return (
     <section className="bg-gray-50 dark:bg-gray-900">
       <div className="flex flex-col items-center justify-center px-6 py-8 mx-auto md:h-screen lg:py-0">
-        <a
-          href="#"
-          className="mb-6 flex items-center text-2xl font-semibold text-gray-900 dark:text-white"
-        >
-          <img
-            className="mr-2 h-8 w-8"
-            src="https://flowbite.s3.amazonaws.com/blocks/marketing-ui/logo.svg"
-            alt="logo"
-          />
-          Flowbite
-        </a>
-
         <div className="lg:w-[1000px] sm:max-w-md xl:p-0 dark:border-gray-700 bg-white rounded-lg shadow dark:bg-gray-800 dark:border">
           <div className="space-y-4 p-6 md:space-y-6 sm:p-8">
-            <h1 className="text-xl font-bold leading-tight tracking-tight text-gray-900 dark:text-white md:text-2xl">
+            <h1 className="text-xl text-center font-bold leading-tight tracking-tight text-gray-900 dark:text-white md:text-2xl">
               Create an account
             </h1>
 
@@ -186,7 +179,7 @@ const Register = () => {
               </div>
 
               {/* Password */}
-              <div>
+              <div className='relative'>
                 <label
                   htmlFor="password"
                   className="mb-2 block text-sm font-medium text-gray-900 dark:text-white"
@@ -195,7 +188,7 @@ const Register = () => {
                 </label>
                 <input
                   id="password"
-                  type="password"
+                  type={showPassword ? 'text' : 'password'}
                   placeholder="••••••••"
                   className="block w-full rounded-lg border border-gray-300 bg-gray-50 p-2.5 text-sm text-gray-900 focus:border-[#2563eb] focus:ring-[#2563eb] dark:border-gray-600 dark:bg-gray-700 dark:text-white dark:placeholder-gray-400 dark:focus:border-blue-500 dark:focus:ring-blue-500"
                   {...register('password', {
@@ -216,6 +209,16 @@ const Register = () => {
                     },
                   })}
                 />
+                <span
+                  className="absolute right-3 top-12 transform -translate-y-1/2 cursor-pointer"
+                  onClick={togglePasswordVisibility}
+                >
+                  {showPassword ? (
+                    <FaEyeSlash className="text-gray-500" />
+                  ) : (
+                    <FaEye className="text-gray-500" />
+                  )}
+                </span>
                 {errors.password && (
                   <p className="pt-2 text-sm font-bold text-red-500">
                     {errors.password.message || 'Password is required'}
@@ -283,6 +286,12 @@ const Register = () => {
                 </Link>
               </p>
             </form>
+            <Link
+              to={'/'}
+              className="btn w-full bg-blue-800 text-white hover:-translate-y-0.5 hover:bg-blue-600 transition-all duration-300"
+            >
+              Go back to Home
+            </Link>
           </div>
         </div>
       </div>

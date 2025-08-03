@@ -1,5 +1,5 @@
 import React from 'react';
-import { Outlet } from 'react-router';
+import { Link, Outlet } from 'react-router';
 import AuthImage from '../assets/AuthImg.png';
 import Navbar from '../pages/Shared/Navbar/Navbar';
 

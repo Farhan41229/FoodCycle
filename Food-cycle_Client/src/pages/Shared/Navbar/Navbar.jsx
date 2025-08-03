@@ -92,14 +92,14 @@ const Navbar = () => {
       <div className="navbar-end">
         {user == null ? (
           <NavLink
-            className="btn transition-all duration-300 w-1/2 lg:w-1/4 rounded-2xl shadow-sm bg-white text-blue-500 hover:shadow-2xl hover:-translate-y-2 border-2 border-blue-500 hover:bg-blue-600 hover:text-white"
+            className="btn transition-all duration-300 w-1/2 lg:w-1/2 rounded-2xl shadow-sm bg-white text-blue-500 hover:shadow-2xl hover:-translate-y-2 border-2 border-blue-500 hover:bg-blue-600 hover:text-white"
             to={'/login'}
           >
             Login
           </NavLink>
         ) : (
           <button
-            className="btn transition-all duration-300 w-1/2 lg:w-1/4 rounded-2xl shadow-sm bg-white text-blue-500 hover:shadow-2xl hover:-translate-y-2 border-2 border-blue-500 hover:bg-blue-600 hover:text-white"
+            className="btn transition-all duration-300 w-1/2 lg:w-1/2 rounded-2xl shadow-sm bg-white text-blue-500 hover:shadow-2xl hover:-translate-y-2 border-2 border-blue-500 hover:bg-blue-600 hover:text-white"
             onClick={HandleLogout}
           >
             Logout
