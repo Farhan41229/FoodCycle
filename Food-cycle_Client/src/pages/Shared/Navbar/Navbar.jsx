@@ -20,6 +20,9 @@ const Navbar = () => {
       <li>
         <NavLink className={'rounded-2xl lg:p-2 lg:w-[150px] border border-blue-500 font-semibold transition-all duration-300 hover:bg-blue-700  hover:text-white hover:font-bold flex justify-center'} to={'/allDonations'}>All Donations</NavLink>
       </li>
+      <li>
+        <NavLink className={'rounded-2xl lg:p-2 lg:w-[150px] border border-blue-500 font-semibold transition-all duration-300 hover:bg-blue-700  hover:text-white hover:font-bold flex justify-center'} to={'/AI'}>AI Chatbot</NavLink>
+      </li>
 
       {user != null ? (
         <li>
@@ -56,7 +59,7 @@ const Navbar = () => {
   };
 
   return (
-    <div className="navbar bg-base-100/40 backdrop-blur-md fixed z-50 top-0 lg:left-[70px] p-5 rounded-[48px] shadow-sm lg:w-11/12 lg:mx-auto my-5">
+    <div className="navbar bg-base-100/40 backdrop-blur-md fixed z-50 top-0 lg:left-[70px] p-5 lg:rounded-[48px] shadow-sm lg:w-11/12 lg:mx-auto my-5">
       <div className="navbar-start">
         <div className="dropdown">
           <div tabIndex={0} role="button" className="btn btn-ghost lg:hidden">

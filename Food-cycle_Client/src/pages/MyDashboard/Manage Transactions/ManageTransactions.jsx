@@ -135,8 +135,8 @@ const ManageTransactions = () => {
   return (
     <div className="w-11/12 mx-auto py-10">
       <div className="flex items-center justify-between gap-4 mb-6 flex-wrap">
-        <h2 className="text-3xl font-semibold">
-          Manage Transactions ({transactions.length})
+        <h2 className="text-3xl font-semibold text-center w-full">
+          Manage Transactions
         </h2>
         {isFetching && (
           <span className="loading loading-spinner loading-sm text-primary" />

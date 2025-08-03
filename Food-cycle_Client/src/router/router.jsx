@@ -25,6 +25,7 @@ import MyRequests from '../pages/MyDashboard/My Requests/MyRequests';
 import MyPickups from '../pages/MyDashboard/My Pickups/MyPickups';
 import RecievedDonations from '../pages/MyDashboard/Received Donations/RecievedDonations';
 import ErrorPage from '../components/ErrorPage/ErrorPage';
+import AILayout from '../layouts/AILayout';
 
 const router = createBrowserRouter([
   {
@@ -140,8 +141,12 @@ const router = createBrowserRouter([
     ],
   },
   {
+    path: '/AI',
+    element: <AILayout></AILayout>,
+  },
+  {
     path: '*', // Catch all invalid routes
-    element: <ErrorPage></ErrorPage>// Display the ErrorPage component
+    element: <ErrorPage></ErrorPage>, // Display the ErrorPage component
   },
 ]);
 

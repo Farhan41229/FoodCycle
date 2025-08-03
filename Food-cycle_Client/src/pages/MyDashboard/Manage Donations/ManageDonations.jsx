@@ -71,7 +71,8 @@ const ManageDonations = () => {
 
   return (
     <div className="w-11/12 mx-auto">
-      <h2 className="text-2xl font-semibold mb-6">All Donations</h2>
+      <h2 className="text-2xl font-semibold my-6 text-center">All Donations</h2>
+      <div className="divider"></div>
 
       {donations.length === 0 ? (
         <p>No donations found.</p>

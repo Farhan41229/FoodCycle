@@ -28,7 +28,7 @@ const AllDonations = () => {
   const verified = donations.filter((d) => d.status === 'Verified');
 
   return (
-    <div className="w-11/12 mx-auto my-10">
+    <div className="w-11/12 mx-auto mb-10 mt-[150px]">
       <h2 className="text-2xl font-semibold mb-6 text-center">
         Approved Donations
       </h2>

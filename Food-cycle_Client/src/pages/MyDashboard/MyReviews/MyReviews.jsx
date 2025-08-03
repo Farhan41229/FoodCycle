@@ -74,14 +74,14 @@ const MyReviews = () => {
   return (
     <div className="p-10">
       <h2 className="text-3xl font-semibold mb-5">My Reviews</h2>
-      <div>
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-10 ">
         {reviews.length === 0 ? (
           <p>No reviews found.</p>
         ) : (
           reviews.map((review) => (
             <div
               key={review._id}
-              className="max-w-lg mx-auto bg-white shadow-md rounded-lg p-6 mb-5"
+              className="w-full mx-auto bg-white shadow-md rounded-lg p-6 mb-5"
             >
               {/* Donation Title */}
               <h3 className="text-xl font-semibold text-gray-800 mb-2">

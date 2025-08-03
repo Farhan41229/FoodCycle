@@ -135,7 +135,7 @@ const ManageUsers = () => {
                   <td className="p-3">
                     <span className="badge badge-outline">{u.role}</span>
                   </td>
-                  <td className="p-3 grid grid-cols-4 gap-2 lg:gap-0">
+                  <td className="p-3 grid grid-cols-1 lg:grid-cols-4 gap-2 lg:gap-0">
                     <button
                       onClick={() => handleRoleChange(u, 'Admin')}
                       className="btn btn-sm btn-secondary"
@@ -156,13 +156,6 @@ const ManageUsers = () => {
                       disabled={updateUser.isLoading}
                     >
                       Make&nbsp;Charity
-                    </button>
-                    <button
-                      onClick={() => handleDelete(u)}
-                      className="btn btn-sm btn-error"
-                      disabled={deleteUser.isLoading}
-                    >
-                      Delete
                     </button>
                   </td>
                 </tr>
