@@ -3,6 +3,11 @@ import UseAxiosSecure from '../../../hooks/UseAxiosSecure';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import Swal from 'sweetalert2';
 import Loading from '../../Shared/Loading/Loading';
+import { FaRegUser } from 'react-icons/fa';
+import { BiSolidDonateHeart } from 'react-icons/bi';
+import { MdOutlineAccessTime } from 'react-icons/md';
+import { ImCross } from 'react-icons/im';
+import { TiTick } from 'react-icons/ti';
 
 const ManageDonations = () => {
   const axiosSecure = UseAxiosSecure();
@@ -62,6 +67,15 @@ const ManageDonations = () => {
   if (isLoading) return <Loading />;
   if (isError) return <p className="text-red-600">{error.message}</p>;
 
+  // Donations Analytics
+  const DonationAnalytics = {
+    totalDonations: donations.length,
+    pendingDonations: donations.filter((d) => d.status === 'Pending').length,
+    verifiedDonations: donations.filter((d) => d.status === 'Verified').length,
+    rejectedDonations: donations.filter((d) => d.status === 'Rejected').length,
+  };
+  console.log(DonationAnalytics);
+
   const badgeColor = (status) =>
     ({
       Pending: 'badge-warning',
@@ -71,7 +85,67 @@ const ManageDonations = () => {
 
   return (
     <div className="w-11/12 mx-auto">
-      <h2 className="text-2xl font-semibold my-6 text-center">Manage Donations</h2>
+      <h1 className="text-2xl font-semibold my-6 text-center">
+        Donation Analytics
+      </h1>
+      <div className="divider"></div>
+      <div className="grid grid-cols-2 lg:grid-cols-4 gap-5 my-10">
+        <div className="card bg-base-100  border border-stone-300">
+          <div className="card-body">
+            <div className="flex justify-start items-center gap-2">
+              <BiSolidDonateHeart />
+              <h2 className="card-title text-sm text-stone-500">
+                Total Donations
+              </h2>
+            </div>
+            <p className="text-3xl font-bold text-center">
+              {DonationAnalytics.totalDonations}
+            </p>
+          </div>
+        </div>
+        <div className="card bg-base-100  border border-stone-300">
+          <div className="card-body">
+            <div className="flex justify-start items-center gap-2">
+              <MdOutlineAccessTime />
+              <h2 className="card-title text-sm text-stone-500">
+                Pending Donations
+              </h2>
+            </div>
+            <p className="text-3xl font-bold text-center">
+              {DonationAnalytics.pendingDonations}
+            </p>
+          </div>
+        </div>
+        <div className="card bg-base-100  border border-stone-300">
+          <div className="card-body">
+            <div className="flex justify-start items-center gap-2">
+              <TiTick size={20} color="green" />
+              <h2 className="card-title text-sm text-stone-500">
+                Verified Donations
+              </h2>
+            </div>
+            <p className="text-3xl font-bold text-center">
+              {DonationAnalytics.verifiedDonations}
+            </p>
+          </div>
+        </div>
+        <div className="card bg-base-100  border border-stone-300">
+          <div className="card-body">
+            <div className="flex justify-start items-center gap-2">
+              <ImCross />
+              <h2 className="card-title text-sm text-stone-500">
+                Rejected Donations
+              </h2>
+            </div>
+            <p className="text-3xl font-bold text-center">
+              {DonationAnalytics.rejectedDonations}
+            </p>
+          </div>
+        </div>
+      </div>
+      <h2 className="text-2xl font-semibold my-6 text-center">
+        Manage Donations
+      </h2>
       <div className="divider"></div>
 
       {donations.length === 0 ? (

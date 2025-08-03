@@ -3,6 +3,10 @@ import { useQuery, useQueryClient } from '@tanstack/react-query';
 import UseAxiosSecure from '../../../hooks/UseAxiosSecure';
 import Swal from 'sweetalert2';
 import 'sweetalert2/dist/sweetalert2.min.css';
+import { CiMoneyCheck1 } from 'react-icons/ci';
+import { MdOutlineAccessTime } from 'react-icons/md';
+import { ImCross } from 'react-icons/im';
+import { TiTick } from 'react-icons/ti';
 
 const ManageTransactions = () => {
   const axiosSecure = UseAxiosSecure();
@@ -131,10 +135,79 @@ const ManageTransactions = () => {
     );
   }
 
+  // Transactions Analytics
+  const TransactionsAnalytics = {
+    totalTransactions: transactions.length,
+    approvedTransactions: transactions.filter((tx) => tx.Status === 'Approved')
+      .length,
+    pendingTransactions: transactions.filter((tx) => tx.Status === 'Pending')
+      .length,
+    rejectedTransactions: transactions.filter((tx) => tx.Status === 'Rejected')
+      .length,
+  };
+  console.log(TransactionsAnalytics);
+
   /* ---------- UI ---------- */
   return (
     <div className="w-11/12 mx-auto py-10">
-      <div className="flex items-center justify-between gap-4 mb-6 flex-wrap">
+      <div className="flex flex-col items-center justify-between gap-4 mb-6 flex-wrap">
+        <h1 className="text-3xl font-semibold text-center w-full">
+          Transaction Analytics
+        </h1>
+        <div className="grid grid-cols-2 lg:grid-cols-4 gap-5 my-10">
+          <div className="card bg-base-100  border border-stone-300">
+            <div className="card-body">
+              <div className="flex justify-start items-center gap-2">
+                <CiMoneyCheck1 />
+                <h2 className="card-title text-sm text-stone-500">
+                  Total Transactions
+                </h2>
+              </div>
+              <p className="text-3xl font-bold text-center">
+                {TransactionsAnalytics.totalTransactions}
+              </p>
+            </div>
+          </div>
+          <div className="card bg-base-100  border border-stone-300">
+            <div className="card-body">
+              <div className="flex justify-start items-center gap-2">
+                <MdOutlineAccessTime />
+                <h2 className="card-title text-sm text-stone-500">
+                  Pending Transactions
+                </h2>
+              </div>
+              <p className="text-3xl font-bold text-center">
+                {TransactionsAnalytics.pendingTransactions}
+              </p>
+            </div>
+          </div>
+          <div className="card bg-base-100  border border-stone-300">
+            <div className="card-body">
+              <div className="flex justify-start items-center gap-2">
+                <TiTick size={20} color="green" />
+                <h2 className="card-title text-sm text-stone-500">
+                  Approved Transactions
+                </h2>
+              </div>
+              <p className="text-3xl font-bold text-center">
+                {TransactionsAnalytics.approvedTransactions}
+              </p>
+            </div>
+          </div>
+          <div className="card bg-base-100  border border-stone-300">
+            <div className="card-body">
+              <div className="flex justify-start items-center gap-2">
+                <ImCross />
+                <h2 className="card-title text-sm text-stone-500">
+                  Rejected Transactions
+                </h2>
+              </div>
+              <p className="text-3xl font-bold text-center">
+                {TransactionsAnalytics.rejectedTransactions}
+              </p>
+            </div>
+          </div>
+        </div>
         <h2 className="text-3xl font-semibold text-center w-full">
           Manage Transactions
         </h2>
