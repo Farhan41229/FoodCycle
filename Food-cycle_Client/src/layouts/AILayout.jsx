@@ -8,8 +8,33 @@ const AILayout = () => {
 
   // Placeholder for SendMessage function implementation
   const sendMessage = async () => {
-    
-  }
+    if (!message.trim()) return; // Prevent empty messages
+
+    // Simulate sending message and receiving response
+    const userMessage = {
+      sender: 'You',
+      text: message,
+    };
+    setChatLog((prev) => [...prev, userMessage]);
+    setMessage(''); // Clear input after sending
+
+    const res = await fetch('http://localhost:5000/api/chat', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({ message }),
+    });
+    const msg = await res.json();
+    setChatLog((prev) => [...prev, { sender: 'Gemini', text: msg }]);
+
+    // // Simulate AI response
+    // const aiResponse = {
+    //   sender: 'AI',
+    //   text: `You said: ${message}`,
+    // };
+    // setChatLog((prev) => [...prev, aiResponse]);
+  };
 
   return (
     <div className="flex flex-col min-h-screen">
@@ -43,7 +68,7 @@ const AILayout = () => {
             />
             <button
               className="bg-[#2563eb] text-white px-6 py-3 rounded-lg hover:bg-[#1d4ed8] transition-all duration-300"
-              onClick={() => {}}
+              onClick={sendMessage}
             >
               Send
             </button>
