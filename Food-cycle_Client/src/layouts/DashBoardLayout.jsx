@@ -49,7 +49,7 @@ const DashBoardLayout = () => {
       </div>
 
       {/* Drawer */}
-      <div className="drawer lg:drawer-open w-[95%] mx-auto mt-[150px]">
+      <div className="drawer lg:drawer-open w-[90%] mx-auto mt-[150px]">
         <input
           id="dashboard-drawer"
           type="checkbox"
@@ -90,7 +90,7 @@ const DashBoardLayout = () => {
         <div className="drawer-side">
           <label htmlFor="dashboard-drawer" className="drawer-overlay" />
           <ul className="menu  p-4 w-80 min-h-full bg-base-200 lg:space-y-4">
-            <h3 className="menu-title mb-2 text-lg font-bold text-primary mt-[120px]">
+            <h3 className="menu-title mb-2 text-lg font-bold text-primary lg:mt-0 mt-[120px]">
               My Panel
             </h3>
 

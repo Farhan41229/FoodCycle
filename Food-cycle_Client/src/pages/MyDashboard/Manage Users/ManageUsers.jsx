@@ -45,27 +45,6 @@ const ManageUsers = () => {
     },
   });
 
-  /* ---------- delete user ---------- */
-  const deleteUser = useMutation({
-    mutationFn: (id) => axiosSecure.delete(`/users/${id}`),
-    onSuccess: () => {
-      queryClient.invalidateQueries(['users']);
-      Swal.fire({
-        icon: 'success',
-        title: 'User deleted',
-        timer: 1800,
-        showConfirmButton: false,
-      });
-    },
-    onError: (err) => {
-      Swal.fire({
-        icon: 'error',
-        title: 'Delete failed',
-        text: err?.response?.data?.error || err.message,
-      });
-    },
-  });
-
   /* ---------- helpers ---------- */
   const handleRoleChange = (user, role) => {
     let payload = { role };
@@ -90,18 +69,6 @@ const ManageUsers = () => {
     });
   };
 
-  const handleDelete = (user) => {
-    Swal.fire({
-      title: 'Delete this user?',
-      text: user.email,
-      icon: 'warning',
-      showCancelButton: true,
-      confirmButtonText: 'Yes, delete',
-    }).then((res) => {
-      if (res.isConfirmed) deleteUser.mutate(user._id);
-    });
-  };
-
   /* ---------- render ---------- */
   if (isLoading) return <Loading />;
   if (isError) return <p className="text-red-600">{error.message}</p>;
@@ -111,8 +78,8 @@ const ManageUsers = () => {
 
   return (
     <div className="w-11/12 mx-auto my-10 lg:my-0">
-      <h2 className="text-2xl font-semibold mb-6 text-center">Manage Users</h2>
-      <div className="divider"></div>
+      <h2 className="text-2xl font-semibold  text-center">Manage Users</h2>
+      <div className="divider lg:mt-0 lg:mb-4"></div>
 
       {visibleUsers.length === 0 ? (
         <p>No users found.</p>
@@ -127,7 +94,7 @@ const ManageUsers = () => {
                 <th className="p-3">Actions</th>
               </tr>
             </thead>
-            <tbody>
+            <tbody className="">
               {visibleUsers.map((u) => (
                 <tr key={u._id} className="hover:bg-base-100">
                   <td className="p-3 font-medium">{u.name}</td>
@@ -135,7 +102,7 @@ const ManageUsers = () => {
                   <td className="p-3">
                     <span className="badge badge-outline">{u.role}</span>
                   </td>
-                  <td className="p-3 grid grid-cols-1 lg:grid-cols-4 gap-2 lg:gap-0">
+                  <td className="p-0 md:p-3 grid grid-cols-1 lg:grid-cols-3 gap-2 lg:gap-5">
                     <button
                       onClick={() => handleRoleChange(u, 'Admin')}
                       className="btn btn-sm btn-secondary"

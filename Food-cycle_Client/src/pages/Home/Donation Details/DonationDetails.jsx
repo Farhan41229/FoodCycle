@@ -242,7 +242,7 @@ const DonationDetails = () => {
       Payload?.favorites.push(donation._id);
       axiosSecure
         .put(`/users/${_id}`, Payload)
-        .then((res) => {
+        .then(() => {
           // Show success SweetAlert when the update is successful
           Swal.fire({
             icon: 'success',
@@ -282,8 +282,8 @@ const DonationDetails = () => {
           className="w-full h-full object-cover"
         />
         <div className="absolute inset-0 bg-gradient-to-b from-black/50 to-black/20" />
-        <h1 className="absolute bottom-6 left-1/2 -translate-x-1/2 text-3xl md:text-4xl font-bold text-white drop-shadow-lg text-center">
-          {donation.title}
+        <h1 className="absolute top-35 lg:top-40 left-1/2 -translate-x-1/2 text-3xl md:text-4xl font-bold text-white drop-shadow-lg text-center">
+          {donation?.title}
         </h1>
       </div>
 
@@ -306,14 +306,16 @@ const DonationDetails = () => {
                 <span className="font-semibold">Status:</span>
                 <span className="badge badge-info">{donation.status}</span>
               </p>
-              <button
-                className="btn bg-blue-600 text-white"
-                onClick={() =>
-                  document.getElementById('my_modal_3').showModal()
-                }
-              >
-                Add a Review
-              </button>
+              {DBUser?.role == 'User' && (
+                <button
+                  className="btn bg-blue-600 text-white"
+                  onClick={() =>
+                    document.getElementById('my_modal_3').showModal()
+                  }
+                >
+                  Add a Review
+                </button>
+              )}
               <dialog id="my_modal_3" className="modal">
                 <div className="modal-box">
                   <form method="dialog">
@@ -359,70 +361,74 @@ const DonationDetails = () => {
                   </button>
                 </div>
               </dialog>
-              <div className="flex gap-5 items-center">
-                <h1>Add to Favourites</h1>
-                <FaRegBookmark
-                  onClick={HandleAddToFavourite}
-                  size={20}
-                  className="cursor-pointer"
-                />
-              </div>
-
-              {/* Request Donation button only for Charity users */}
-              {canRequestDonation && (
-                <button
-                  onClick={() => {
-                    if (canSubmitRequest) {
-                      setShowRequestModal(true);
-                    } else {
-                      Swal.fire({
-                        icon: 'info',
-                        title: 'You cannot place a request',
-                        text: 'You have already made a request or your request is pending or accepted.',
-                      });
-                    }
-                  }}
-                  className={`btn btn-outline btn-primary btn-sm mt-4 ${
-                    !canSubmitRequest && 'disabled:opacity-50'
-                  }`}
-                  disabled={!canSubmitRequest}
-                >
-                  {canSubmitRequest
-                    ? 'Request Donation'
-                    : 'You cannot place a request'}
-                </button>
+              {DBUser?.role == 'User' && (
+                <div className="flex gap-5 items-center">
+                  <h1>Add to Favourites</h1>
+                  <FaRegBookmark
+                    onClick={HandleAddToFavourite}
+                    size={20}
+                    className="cursor-pointer"
+                  />
+                </div>
               )}
 
-              {/* Check each request and update the pickup status */}
-              {requests &&
-                requests.map((req) => {
-                  if (req.DonationID === donation._id) {
-                    if (
-                      req.Status1 === 'Accepted' &&
-                      req.Status2 === 'Assigned'
-                    ) {
-                      return (
-                        <button
-                          key={req._id}
-                          onClick={() => handleConfirmPickup(req._id)}
-                          className="btn btn-success btn-sm mt-4"
-                        >
-                          Confirm Pickup
-                        </button>
-                      );
-                    } else if (req.Status2 === 'Picked Up') {
-                      return (
-                        <button
-                          key={req._id}
-                          className="btn btn-disabled btn-sm mt-4"
-                          disabled
-                        >
-                          You have already picked up this donation
-                        </button>
-                      );
+              <div className="flex flex-col gap-1 w-[60%]">
+                {/* Request Donation button only for Charity users */}
+                {canRequestDonation && (
+                  <button
+                    onClick={() => {
+                      if (canSubmitRequest) {
+                        setShowRequestModal(true);
+                      } else {
+                        Swal.fire({
+                          icon: 'info',
+                          title: 'You cannot place a request',
+                          text: 'You have already made a request or your request is pending or accepted.',
+                        });
+                      }
+                    }}
+                    className={`btn btn-outline btn-primary btn-sm mt-4 ${
+                      !canSubmitRequest && 'disabled:opacity-50'
+                    }`}
+                    disabled={!canSubmitRequest}
+                  >
+                    {canSubmitRequest
+                      ? 'Request Donation'
+                      : 'You cannot place a request'}
+                  </button>
+                )}
+
+                {/* Check each request and update the pickup status */}
+                {requests &&
+                  requests.map((req) => {
+                    if (req.DonationID === donation._id) {
+                      if (
+                        req.Status1 === 'Accepted' &&
+                        req.Status2 === 'Assigned'
+                      ) {
+                        return (
+                          <button
+                            key={req._id}
+                            onClick={() => handleConfirmPickup(req._id)}
+                            className="btn btn-success btn-sm mt-4"
+                          >
+                            Confirm Pickup
+                          </button>
+                        );
+                      } else if (req.Status2 === 'Picked Up') {
+                        return (
+                          <button
+                            key={req._id}
+                            className="btn btn-disabled btn-sm mt-4"
+                            disabled
+                          >
+                            You have already picked up this donation
+                          </button>
+                        );
+                      }
                     }
-                  }
-                })}
+                  })}
+              </div>
             </div>
           </div>
         </div>

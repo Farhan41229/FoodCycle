@@ -55,7 +55,7 @@ const Profile = () => {
       </div>
 
       {/* Charity Request Button */}
-      {(DBUser?.role == 'Charity' || DBUser?.role == 'User') && (
+      {DBUser?.role == 'User' && (
         <Link
           to={'/dashboard/Payment'}
           className="btn w-full mx-auto bg-blue-500 text-white mt-20 hover:bg-blue-700 hover:shadow-2xl hover:-translate-y-2 transition-all duration-300"

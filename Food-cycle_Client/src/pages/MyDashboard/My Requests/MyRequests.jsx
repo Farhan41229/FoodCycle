@@ -2,6 +2,7 @@ import React, { useContext } from 'react';
 import UseAxiosSecure from '../../../hooks/UseAxiosSecure';
 import { useQuery, useQueryClient } from '@tanstack/react-query';
 import AuthContext from '../../../context/AuthContext/AuthContext';
+import Swal from 'sweetalert2'; // Import SweetAlert2
 
 const MyRequests = () => {
   const axiosSecure = UseAxiosSecure();
@@ -24,12 +25,33 @@ const MyRequests = () => {
 
   // Handle Cancel request functionality (only for "Pending" requests)
   const cancelRequest = async (requestId) => {
-    try {
-      await axiosSecure.delete(`/requests/${requestId}`);
-      // Refetch the requests after deleting
-      queryClient.invalidateQueries(['requests', DBUser?.email]);
-    } catch (error) {
-      console.error('Error canceling request:', error);
+    // SweetAlert confirmation before canceling
+    const result = await Swal.fire({
+      title: 'Are you sure?',
+      text: 'Do you want to cancel this request?',
+      icon: 'warning',
+      showCancelButton: true,
+      confirmButtonText: 'Yes, cancel it!',
+      cancelButtonText: 'No, keep it',
+      reverseButtons: true,
+    });
+
+    if (result.isConfirmed) {
+      try {
+        await axiosSecure.delete(`/requests/${requestId}`);
+        // Refetch the requests after deleting
+        queryClient.invalidateQueries(['requests', DBUser?.email]);
+        Swal.fire('Cancelled!', 'Your request has been cancelled.', 'success');
+      } catch (error) {
+        console.error('Error canceling request:', error);
+        Swal.fire(
+          'Error',
+          'There was an error canceling your request. Please try again.',
+          'error'
+        );
+      }
+    } else {
+      Swal.fire('Cancelled', 'Your request is safe!', 'info');
     }
   };
 
@@ -76,7 +98,7 @@ const MyRequests = () => {
                   {request.Status1 === 'Pending' && (
                     <button
                       onClick={() => cancelRequest(request._id)}
-                      className="btn btn-sm btn-danger"
+                      className="btn btn-sm bg-red-500 text-white hover:bg-red-600"
                     >
                       Cancel
                     </button>

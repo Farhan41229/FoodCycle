@@ -19,7 +19,7 @@ const RecievedDonations = () => {
       const res = await axiosSecure.get(
         `/requests?email=${DBUser?.email}&status=Picked Up`
       );
-      return res.data;
+      return res.data.filter((request) => request.Status2 === 'Picked Up');
     },
   });
 
