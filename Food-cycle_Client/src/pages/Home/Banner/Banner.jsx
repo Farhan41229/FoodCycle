@@ -8,7 +8,7 @@ const Banner = () => {
   return (
     <div data-aos="fade-left" data-aos-duration="2000">
       <Carousel
-        className="mb-10 mt-[150px]"
+        className="mb-28 mt-[150px]"
         showStatus={false}
         autoPlay={true}
         showIndicators={false}

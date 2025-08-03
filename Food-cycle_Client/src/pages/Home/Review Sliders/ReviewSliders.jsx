@@ -28,7 +28,8 @@ const ReviewSliders = () => {
     <div
       data-aos="fade-right"
       data-aos-duration="3000"
-      className="bg-stone-100 py-10 px-4 lg:px-20 my-5"
+      data-aos-offset="1000"
+      className="bg-blue-200 py-10 px-4 lg:px-20 my-5"
     >
       <h2 className="text-3xl font-extrabold text-center text-gray-800 mb-10">
         What Our Customers Say

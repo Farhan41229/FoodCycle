@@ -395,11 +395,7 @@ app.put('/reviews/:id', async (req, res) => {
    CHARITY REQUESTS CRUD (NEW)
    ========================================================= */
 
-/**
- * POST /requests
- * Insert a new charity request document.
- * Adds createdAt & updatedAt timestamps.
- */
+
 app.post('/requests', async (req, res) => {
   try {
     const doc = { ...req.body };
@@ -423,14 +419,7 @@ app.post('/requests', async (req, res) => {
   }
 });
 
-/**
- * GET /requests
- * Supports:
- *   - /requests                       -> all
- *   - /requests?email=...             -> by Charity_Email
- *   - /requests?RESemail=...          -> by Restaurant_Email
- *   - /requests?email=...&RESemail=...-> OR either matches
- */
+
 app.get('/requests', async (req, res) => {
   try {
     const { email, RESemail } = req.query;
@@ -458,10 +447,7 @@ app.get('/requests', async (req, res) => {
   }
 });
 
-/**
- * GET /requests/:id
- * Fetch single request by _id.
- */
+
 app.get('/requests/:id', async (req, res) => {
   try {
     const { id } = req.params;
@@ -480,11 +466,7 @@ app.get('/requests/:id', async (req, res) => {
   }
 });
 
-/**
- * PUT /requests/:id
- * Partial update: only sets provided fields + updates updatedAt.
- * createdAt is preserved (ignored if present in body).
- */
+
 app.put('/requests/:id', async (req, res) => {
   try {
     const { id } = req.params;
@@ -521,10 +503,7 @@ app.put('/requests/:id', async (req, res) => {
   }
 });
 
-/**
- * DELETE /requests/:id
- * Remove a request by _id.
- */
+
 app.delete('/requests/:id', async (req, res) => {
   try {
     const { id } = req.params;

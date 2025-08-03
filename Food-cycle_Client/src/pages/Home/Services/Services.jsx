@@ -53,6 +53,7 @@ export default function ServicesSection() {
     <section
       data-aos="fade-down"
       data-aos-duration="3000"
+      data-aos-offset="1000"
       id="services"
       className="py-16 my-10 rounded-2xl bg-blue-200"
     >
@@ -70,7 +71,7 @@ export default function ServicesSection() {
           {services.map(({ title, desc, Icon: ServiceIcon }) => (
             <div
               key={title}
-              className="card bg-base-100 shadow-md hover:shadow-lg  hover:bg-blue-100 hover:scale-105 transition-all duration-200 ease-in-out hover:text-black hover:cursor-pointer"
+              className="card bg-base-100 shadow-md hover:shadow-lg  hover:bg-blue-300 hover:scale-105 transition-all duration-200 ease-in-out hover:text-black hover:cursor-pointer"
             >
               <div className="card-body items-center text-center">
                 <ServiceIcon className="text-5xl text-primary mb-4" />

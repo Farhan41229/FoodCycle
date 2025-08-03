@@ -3,7 +3,7 @@ import CountUp from 'react-countup';
 
 const Stat = () => {
   return (
-    <div className="stats shadow-lg lg:w-full lg:text-center lg:space-y-6 mb-5 p-6 w-full">
+    <div className="stats shadow-xl bg-blue-200 lg:w-full lg:text-center lg:space-y-6 mb-5 p-6 w-full">
       {/* Grid layout for responsiveness */}
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
         {/* Stat Card 1: Downloads */}
