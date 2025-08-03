@@ -4,6 +4,7 @@ const express = require('express');
 const cors = require('cors');
 const dotenv = require('dotenv');
 const { MongoClient, ServerApiVersion, ObjectId } = require('mongodb');
+const { GoogleGenAI } = require('@google/genai');
 
 dotenv.config();
 
@@ -540,6 +541,32 @@ app.delete('/requests/:id', async (req, res) => {
   } catch (err) {
     console.error('DELETE /requests/:id error:', err);
     res.status(500).send({ error: 'Failed to delete request' });
+  }
+});
+
+/* =========================================================
+   AI CHATBOT
+   ========================================================= */
+
+const ai = new GoogleGenAI({
+  apiKey: process.env.GEMINI_API_KEY,
+});
+
+app.post('/api/chat', async (req, res) => {
+  const { message } = req.body;
+  // const message = "Hi";
+
+  try {
+    const result = await ai.models.generateContent({
+      model: 'gemini-2.0-flash-001',
+      contents: message,
+    });
+
+    console.log('result.text', result.text);
+    res.json(result.text);
+  } catch (error) {
+    console.error('Error:', error.message);
+    res.status(500).json({ error: 'Something went wrong' });
   }
 });
 

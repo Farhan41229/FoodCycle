@@ -7,6 +7,9 @@ const AILayout = () => {
   const [chatLog, setChatLog] = useState([]);
 
   // Placeholder for SendMessage function implementation
+  const sendMessage = async () => {
+    
+  }
 
   return (
     <div className="flex flex-col min-h-screen">
