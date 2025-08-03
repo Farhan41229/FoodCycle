@@ -24,6 +24,7 @@ import ManageTransactions from '../pages/MyDashboard/Manage Transactions/ManageT
 import MyRequests from '../pages/MyDashboard/My Requests/MyRequests';
 import MyPickups from '../pages/MyDashboard/My Pickups/MyPickups';
 import RecievedDonations from '../pages/MyDashboard/Received Donations/RecievedDonations';
+import ErrorPage from '../components/ErrorPage/ErrorPage';
 
 const router = createBrowserRouter([
   {
@@ -137,6 +138,10 @@ const router = createBrowserRouter([
         ),
       },
     ],
+  },
+  {
+    path: '*', // Catch all invalid routes
+    element: <ErrorPage></ErrorPage>// Display the ErrorPage component
   },
 ]);
 

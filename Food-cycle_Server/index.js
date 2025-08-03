@@ -37,7 +37,7 @@ let CharityRequestsCollection;
 let ReviewsCollection;
 
 async function initMongo() {
-  await client.connect();
+  // await client.connect();
   const db = client.db('foodCycle');
   DonationsCollection = db.collection('donations');
   TransactionsCollection = db.collection('transactions');
@@ -549,7 +549,7 @@ app.delete('/requests/:id', async (req, res) => {
 process.on('SIGINT', async () => {
   console.log('\nShutting down gracefully…');
   try {
-    await client.close();
+    // await client.close();
   } catch (e) {}
   process.exit(0);
 });
