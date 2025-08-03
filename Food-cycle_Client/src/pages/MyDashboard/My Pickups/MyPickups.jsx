@@ -53,8 +53,9 @@ const MyPickups = () => {
   if (isError) return <p className="text-red-600">{error.message}</p>;
 
   return (
-    <div>
-      <h2>My Pickups</h2>
+    <div className='px-10 my-10'>
+      <h2 className='text-3xl font-bold text-center'>My Pickups</h2>
+      <div className="divider"></div>
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 mt-4">
         {requests.map((request) => (
           <div

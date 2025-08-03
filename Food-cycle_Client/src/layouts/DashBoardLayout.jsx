@@ -126,6 +126,17 @@ const DashBoardLayout = () => {
                     <span>My Donations</span>
                   </NavLink>
                 </li>
+
+                {/* Charity Requests */}
+                <li>
+                  <NavLink
+                    to="/dashboard/Charityrequests"
+                    className={({ isActive }) => (isActive ? active : inactive)}
+                  >
+                    <FiClipboard className="text-lg" />
+                    <span>Charity Requests</span>
+                  </NavLink>
+                </li>
               </>
             )}
 

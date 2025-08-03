@@ -50,12 +50,17 @@ const services = [
 
 export default function ServicesSection() {
   return (
-    <section id="services" className="py-16 my-10 rounded-2xl bg-[#03373D]">
+    <section
+      data-aos="fade-down"
+      data-aos-duration="3000"
+      id="services"
+      className="py-16 my-10 rounded-2xl bg-blue-200"
+    >
       <div className="container mx-auto px-4 max-w-6xl text-center">
-        <h2 className="text-[40px] font-extrabold mb-3 text-white">
+        <h2 className="text-[40px] font-extrabold mb-3 text-blue-900">
           Our Services
         </h2>
-        <p className="mb-10 font-medium  text-white max-w-2xl mx-auto">
+        <p className="mb-10 font-medium  text-blue-900 max-w-2xl mx-auto">
           Join us in reducing food waste and feeding communities in need. We
           offer reliable, fast, and efficient food donation solutions that make
           a real impact.

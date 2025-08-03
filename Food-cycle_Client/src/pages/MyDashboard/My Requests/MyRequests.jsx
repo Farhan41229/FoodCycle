@@ -60,8 +60,9 @@ const MyRequests = () => {
   if (isError) return <p className="text-red-600">{error.message}</p>;
 
   return (
-    <div>
-      <h2>My Requests</h2>
+    <div className='px-10 my-10'>
+      <h2 className='text-3xl text-center font-bold'>My Requests</h2>
+      <div className="divider"></div>
       <div className="overflow-x-auto mt-4">
         <table className="table w-full">
           <thead>

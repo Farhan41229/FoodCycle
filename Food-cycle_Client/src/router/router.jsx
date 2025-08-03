@@ -26,6 +26,7 @@ import MyPickups from '../pages/MyDashboard/My Pickups/MyPickups';
 import RecievedDonations from '../pages/MyDashboard/Received Donations/RecievedDonations';
 import ErrorPage from '../components/ErrorPage/ErrorPage';
 import AILayout from '../layouts/AILayout';
+import CharityRequests from '../pages/MyDashboard/Charity Requests/CharityRequests';
 
 const router = createBrowserRouter([
   {
@@ -105,6 +106,10 @@ const router = createBrowserRouter([
       {
         path: 'update-donation/:id',
         Component: UpdateDonation,
+      },
+      {
+        path: 'Charityrequests',
+        Component: CharityRequests,
       },
       {
         path: 'Payment',

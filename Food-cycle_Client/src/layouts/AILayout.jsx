@@ -112,7 +112,7 @@ const AILayout = () => {
           )}
 
           {/* Message Input */}
-          <div className="flex lg:flex-row items-center space-x-4 space-y-4 lg:space-y-0 flex-col">
+          <div className="flex lg:flex-row items-center space-x-4  lg:space-y-0 flex-col">
             <input
               className="w-full p-3 border border-gray-300 rounded-lg shadow-md focus:outline-none focus:ring-2 focus:ring-[#2563eb] mb-2"
               value={message}
@@ -121,7 +121,7 @@ const AILayout = () => {
               placeholder="Type your message here..."
             />
             <button
-              className="bg-[#2563eb] text-white px-6 py-3 rounded-lg hover:bg-[#1d4ed8] transition-all duration-300"
+              className="bg-[#2563eb] text-white px-6 py-3 rounded-lg hover:bg-[#1d4ed8] transition-all duration-300 mt-5 lg:-mt-2"
               onClick={sendMessage}
             >
               Send
