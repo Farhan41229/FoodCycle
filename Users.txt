@@ -1,0 +1,23 @@
+Users =>
+
+Admin:
+	Email: admin123@gmail.com
+	Pass: Admin123#
+Restaurant:
+	Email: farhan@gmail.com
+	Pass: Ayon123#
+Charity:
+	Email: studymaterials1046@gmial.com
+	Pass: Charity123#
+User:
+	Email: user123@gmail.com
+	Pass: User123#
+
+Live Site Link: https://foodcycle-65915.web.app/
+Live Server Link: https://food-cycle-server-gold.vercel.app/
+
+Git Repo Client Link: https://github.com/Programming-Hero-Web-Course4/b11a12-client-side-Farhan41229
+Git Repo Server Link: https://github.com/Programming-Hero-Web-Course4/b11a12-server-side-Farhan41229
+
+
+RT5VEK
